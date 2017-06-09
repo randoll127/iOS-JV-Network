@@ -25,12 +25,12 @@
     return self;
 }
 
--(void)request:(id<JVRequestProtocol>)api{
+-(void)request:(id<JVRequestProtocol>)api completed:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completeBlock{
     for(NSDictionary* __strategy in mStrategyArr){
         Class __cls = NSClassFromString(__strategy[@"name"]);
         id<JVRequestStrategyProtocol> __instance = [__cls new];
         if([__instance assemblingFromRequestApi:api]){
-            [__instance request:api];
+            [__instance request:api completed:completeBlock];
             break;
         }
     }

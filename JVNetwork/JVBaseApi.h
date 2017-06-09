@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "JSONModel.h"
+#import <ReactiveCocoa.h>
 @interface JVBaseApi : NSObject
--(void)request;
+-(void)request:(void (^)(id x))success;
 @property (nonatomic,strong) JSONModel* responseData;
+@property (nonatomic,strong) RACSignal* signal;
 @end

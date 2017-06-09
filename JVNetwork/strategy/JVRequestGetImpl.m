@@ -21,9 +21,7 @@
         NSMutableSet* set = [[NSMutableSet alloc]initWithSet:mUrlSessionManager.responseSerializer.acceptableContentTypes];
         [set addObject:@"text/html"];
         mUrlSessionManager.responseSerializer.acceptableContentTypes = set;
-        
-        NSLog(@"%@", mUrlSessionManager.responseSerializer.acceptableContentTypes);
-        [mUrlSessionManager setRequestSerializer:requestSer];
+                [mUrlSessionManager setRequestSerializer:requestSer];
         
         AFHTTPResponseSerializer* responseSer = [AFHTTPResponseSerializer serializer];
         [mUrlSessionManager setResponseSerializer:responseSer];
@@ -52,18 +50,11 @@
         return NO;
 }
 
--(void)request:(id<JVRequestProtocol>)requestApi{
+-(void)request:(id<JVRequestProtocol>)requestApi completed:(void (^)(NSURLResponse *, id, NSError *))completeBlock{
     NSError* serializationError;
     NSMutableURLRequest *request = [mUrlSessionManager.requestSerializer requestWithMethod:@"GET" URLString:[requestApi requestUrl] parameters:nil error:&serializationError];
     NSURLSessionDataTask *dataTask = [mUrlSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
-        if (error) {
-            [requestApi error:response responseObject:responseObject error:error];
-        } else {
-            [requestApi success:response responseObject:responseObject];
-        }
-        if([requestApi respondsToSelector:@selector(completed:responseObject:error:)]){
-            [requestApi completed:response responseObject:responseObject error:error];
-        }
+        completeBlock(response,responseObject,error);
     }];
     [dataTask resume];
     
